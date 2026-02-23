@@ -2,7 +2,30 @@
 
 A .NET tool for managing and working with large repositories and monorepos.
 
+## Installing:
+
+```shell
+dotnet tool install dotnet-monorepo
+```
+
+## Features
+
+### Selective CLI Command Execution
+
+`dotnet monorepo` includes wrappers for select dotnet cli commands that call `dotnet affects` to determine projects that 
+have been affected based on a git diff, and executes the command for only those projects, transparently passing 
+through supplied arguments. 
+
+```shell
+dotnet monorepo build --from v0.3.0 --to v0.2.0 --verbosity minimum --configuration Release
+```
+
+Supported commands include `clean` `restore` `build` `pack` `publish` `test`
+
 ## Research
+
+
+### Selective Version
 
 ### Solution Management
 
@@ -19,7 +42,7 @@ however these have a few limitations:
 What would be ideal is a system for generating solution files for specific projects or groups of projects that 
 included the project(s) and all their dependencies and dependents are included.
 
-Generated solution files could use the extension .g.csproj and optionally (probably recommendedly) excluded 
+Generated solution files could use the extension .g.csproj and optionally (probably recommended) excluded 
 from source control.
 
 A cli command with “watch” functionality that ran in the background monitoring these files and watching for 

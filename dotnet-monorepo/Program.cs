@@ -1,13 +1,14 @@
 using System.CommandLine;
-using DotnetMonorepo.Commands;
+using DotnetMonorepo.DotnetCommands;
 
 var rootCommand = new RootCommand("Monorepo commands for dotnet cli")
 {
     Commands.Affected,
-    Commands.Build,
-    Commands.Restore,
     Commands.Clean,
+    Commands.Restore,
+    Commands.Build,
     Commands.Pack,
+    Commands.Publish,
     Commands.Test,
 };
 

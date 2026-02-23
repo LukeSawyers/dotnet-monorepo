@@ -1,15 +1,18 @@
-namespace DotnetMonorepo.Commands;
+namespace DotnetMonorepo;
 
 public static class Directories
 {
-    public static string RepositoryRoot { get; } = Environment.CurrentDirectory.Let(d =>
+    /// <summary>
+    /// The git repository resolved from the current directory 
+    /// </summary>
+    public static string? RepositoryRoot { get; } = Environment.CurrentDirectory.Let(d =>
     {
         var rootDirectory = new DirectoryInfo(d);
         while (true)
         {
             if (rootDirectory is null)
             {
-                throw new ArgumentNullException(nameof(rootDirectory));
+                return null;
             }
 
             if (rootDirectory.EnumerateDirectories().Any(d => d.Name == ".git"))

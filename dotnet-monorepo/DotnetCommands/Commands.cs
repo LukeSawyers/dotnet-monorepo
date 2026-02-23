@@ -6,13 +6,25 @@ using Microsoft.VisualStudio.SolutionPersistence.Model;
 using Microsoft.VisualStudio.SolutionPersistence.Serializer;
 using Command = System.CommandLine.Command;
 
-namespace DotnetMonorepo.Commands;
+namespace DotnetMonorepo.DotnetCommands;
 
 public static class Commands
 {
-    private static Option<string> AffectedPath { get; } = new("--repository-path");
-    private static Option<string> AffectedFrom { get; } = new("--from");
-    private static Option<string> AffectedTo { get; } = new("--to");
+    private static Option<string> AffectedPath { get; } = new("--repository-path")
+    {
+        Description = $"Specify the path to the git repository to run commands on. " +
+                      $"By default the tool will try to find a git repository by traversing up from the current working directory. "
+    };
+    
+    private static Option<string> AffectedFrom { get; } = new("--from")
+    {
+        Description = "The ref to compare against --to"
+    };
+
+    private static Option<string> AffectedTo { get; } = new("--to")
+    {
+        Description = "The ref to compare against --from"
+    };
 
     public static Command Affected { get; } = new Command("affected")
     {
@@ -25,10 +37,11 @@ public static class Commands
         c.SetAction(async (result, token) => await GetAffectedProjectsAsync(result, token));
     });
 
-    public static Command Build { get; } = DotnetCommandWithAffected();
-    public static Command Restore { get; } = DotnetCommandWithAffected();
     public static Command Clean { get; } = DotnetCommandWithAffected();
+    public static Command Restore { get; } = DotnetCommandWithAffected();
+    public static Command Build { get; } = DotnetCommandWithAffected();
     public static Command Pack { get; } = DotnetCommandWithAffected();
+    public static Command Publish { get; } = DotnetCommandWithAffected();
     public static Command Test { get; } = DotnetCommandWithAffected();
 
     private static Command DotnetCommandWithAffected(
@@ -78,8 +91,14 @@ public static class Commands
     {
         var repositoryPath = parseResult.GetValue(AffectedPath) ?? Directories.RepositoryRoot;
 
+        if (repositoryPath is null)
+        {
+            Console.WriteLine($"Unable to find a git repository, run from an initialized git repository or specify with {AffectedPath.Name}");
+            return [];
+        }
+
         var args =
-            "tool exec dotnet-affected --" +
+            "tool exec dotnet-affected -y --allow-roll-forward --ignore-failed-sources --" +
             $" --repository-path {repositoryPath}" +
             $" --output-dir {Directories.TempFolder}" +
             parseResult.GetValue(AffectedFrom)?.Let(f => $" --from {f}") +
