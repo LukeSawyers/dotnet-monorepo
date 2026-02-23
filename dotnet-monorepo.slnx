@@ -1,0 +1,7 @@
+<Solution>
+  <Folder Name="/SolutionItems/">
+    <File Path="README.md" />
+  </Folder>
+  <Project Path="build/build.csproj" />
+  <Project Path="dotnet-monorepo\dotnet-monorepo.csproj" />
+</Solution>

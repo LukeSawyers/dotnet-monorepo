@@ -1,0 +1,15 @@
+name: merge-check
+on:
+  pull_request:
+    branches:
+    - '**'
+  workflow_dispatch:
+jobs:
+  ubuntu-latest:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+    - name: 'Execute Targets: Validate'
+      run: dotnet run --verbosity q --project ./build/build.csproj -- Validate --plan
