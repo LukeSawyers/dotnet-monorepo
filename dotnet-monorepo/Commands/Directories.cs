@@ -2,9 +2,9 @@ namespace DotnetMonorepo.Commands;
 
 public static class Directories
 {
-    public static string RepositoryRoot { get; } = AppContext.BaseDirectory.Let(d =>
+    public static string RepositoryRoot { get; } = Environment.CurrentDirectory.Let(d =>
     {
-        var rootDirectory = new DirectoryInfo(AppContext.BaseDirectory);
+        var rootDirectory = new DirectoryInfo(d);
         while (true)
         {
             if (rootDirectory is null)
